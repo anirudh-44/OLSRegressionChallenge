@@ -2,7 +2,10 @@
 Layout dimensions are used to give the minimum, maximum and preferred
 dimensions for containers and controls.
 """
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Union
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Callable, Union
 
 __all__ = [
     "Dimension",
@@ -38,10 +41,10 @@ class Dimension:
 
     def __init__(
         self,
-        min: Optional[int] = None,
-        max: Optional[int] = None,
-        weight: Optional[int] = None,
-        preferred: Optional[int] = None,
+        min: int | None = None,
+        max: int | None = None,
+        weight: int | None = None,
+        preferred: int | None = None,
     ) -> None:
         if weight is not None:
             assert weight >= 0  # Also cannot be a float.
@@ -81,7 +84,7 @@ class Dimension:
             self.preferred = self.max
 
     @classmethod
-    def exact(cls, amount: int) -> "Dimension":
+    def exact(cls, amount: int) -> Dimension:
         """
         Return a :class:`.Dimension` with an exact size. (min, max and
         preferred set to ``amount``).
@@ -89,7 +92,7 @@ class Dimension:
         return cls(min=amount, max=amount, preferred=amount)
 
     @classmethod
-    def zero(cls) -> "Dimension":
+    def zero(cls) -> Dimension:
         """
         Create a dimension that represents a zero size. (Used for 'invisible'
         controls.)
@@ -103,18 +106,18 @@ class Dimension:
     def __repr__(self) -> str:
         fields = []
         if self.min_specified:
-            fields.append("min=%r" % self.min)
+            fields.append(f"min={self.min!r}")
         if self.max_specified:
-            fields.append("max=%r" % self.max)
+            fields.append(f"max={self.max!r}")
         if self.preferred_specified:
-            fields.append("preferred=%r" % self.preferred)
+            fields.append(f"preferred={self.preferred!r}")
         if self.weight_specified:
-            fields.append("weight=%r" % self.weight)
+            fields.append(f"weight={self.weight!r}")
 
-        return "Dimension(%s)" % ", ".join(fields)
+        return "Dimension({})".format(", ".join(fields))
 
 
-def sum_layout_dimensions(dimensions: List[Dimension]) -> Dimension:
+def sum_layout_dimensions(dimensions: list[Dimension]) -> Dimension:
     """
     Sum a list of :class:`.Dimension` instances.
     """
@@ -125,7 +128,7 @@ def sum_layout_dimensions(dimensions: List[Dimension]) -> Dimension:
     return Dimension(min=min, max=max, preferred=preferred)
 
 
-def max_layout_dimensions(dimensions: List[Dimension]) -> Dimension:
+def max_layout_dimensions(dimensions: list[Dimension]) -> Dimension:
     """
     Take the maximum of a list of :class:`.Dimension` instances.
     Used when we have a HSplit/VSplit, and we want to get the best width/height.)
@@ -196,7 +199,7 @@ def to_dimension(value: AnyDimension) -> Dimension:
     raise ValueError("Not an integer or Dimension object.")
 
 
-def is_dimension(value: object) -> "TypeGuard[AnyDimension]":
+def is_dimension(value: object) -> TypeGuard[AnyDimension]:
     """
     Test whether the given value could be a valid dimension.
     (For usage in an assertion. It's not guaranteed in case of a callable.)

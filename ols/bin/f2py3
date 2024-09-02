@@ -1,4 +1,6 @@
-#!/Users/ayushsingh/Documents/OLSRegressionChallenge/ols/bin/python
+#!/bin/sh
+'''exec' "/home/dell/courses/ML-Ayush/Projects/Cancer Prediction - LR/OLSRegressionChallenge/OLSRegressionChallenge/ols/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys

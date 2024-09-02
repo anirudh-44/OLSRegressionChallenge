@@ -192,9 +192,10 @@ def get_scheme(
         data=paths["data"],
     )
     if root is not None:
+        converted_keys = {}
         for key in SCHEME_KEYS:
-            value = change_root(root, getattr(scheme, key))
-            setattr(scheme, key, value)
+            converted_keys[key] = change_root(root, getattr(scheme, key))
+        scheme = Scheme(**converted_keys)
     return scheme
 
 
@@ -211,15 +212,3 @@ def get_purelib() -> str:
 
 def get_platlib() -> str:
     return sysconfig.get_paths()["platlib"]
-
-
-def get_isolated_environment_paths(prefix: str) -> typing.Dict[str, str]:
-    variables = {"base": prefix, "platbase": prefix}
-    if "venv" in sysconfig.get_scheme_names():
-        return sysconfig.get_paths(vars=variables, scheme="venv")
-    return sysconfig.get_paths(vars=variables)
-
-
-def get_isolated_environment_lib_paths(prefix: str) -> typing.Tuple[str, str]:
-    paths = get_isolated_environment_paths(prefix)
-    return (paths["purelib"], paths["platlib"])
